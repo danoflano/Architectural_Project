@@ -16,12 +16,12 @@ global fs
 #%% Obtaining Mic responses from 5 second chirp and PLOTTING
 
 # Obtain Response for each mic
-time,freq,t_sig_chirp,f_sig_chirp = pf.AverageTimeSignals('exponential_chirp2.wav',5)
-time,freq,t_sig23,f_sig23 = pf.AverageTimeSignals('Chamber/Earthworks M23 chirp2.wav',5)
-time,freq,t_sig57,f_sig57 = pf.AverageTimeSignals('Chamber/SM57 chirp2.wav',5)
-time,freq,t_sig251,f_sig251 = pf.AverageTimeSignals('Chamber/251 chirp2.wav',5)
-time,freq,t_sig84_dr,f_sig84_dr = pf.AverageTimeSignals('Chamber/84 drum5 chirp2.wav',5)
-time,freq,t_sig84_de,f_sig84_de = pf.AverageTimeSignals('Chamber/84 desk6 chirp2.wav',5)
+time,freq,t_sig_chirp,f_sig_chirp = pf.AverageTimeSignals('exponential_chirp.wav',5)
+time,freq,t_sig23,f_sig23 = pf.AverageTimeSignals('Chamber/Earthworks M23 chirp1.wav',5)
+time,freq,t_sig57,f_sig57 = pf.AverageTimeSignals('Chamber/SM57 chirp1.wav',5)
+time,freq,t_sig251,f_sig251 = pf.AverageTimeSignals('Chamber/251 chirp1.wav',5)
+time,freq,t_sig84_dr,f_sig84_dr = pf.AverageTimeSignals('Chamber/84 drum5 chirp1.wav',5)
+time,freq,t_sig84_de,f_sig84_de = pf.AverageTimeSignals('Chamber/84 desk6 chirp1.wav',5)
 
 speaker_response = f_sig23/f_sig_chirp
 IR57 = f_sig57/speaker_response/f_sig_chirp
@@ -75,14 +75,14 @@ rcParams['legend.fontsize'] = 11
 
 
 colors = np.array(['b','chartreuse','darksalmon','r','black'])
-plt.close('all')
+# plt.close('all')
 fig, ax1 = plt.subplots()
 ax1.semilogx(freq_tr, 20*np.log10(IR251_tr/np.mean(np.abs(IR251_tr[idx3:idx4]))),label='WA-251',color=colors[0])
 ax1.semilogx(freq_tr, 20*np.log10(IR57_tr/np.mean(np.abs(IR57_tr[idx3:idx4]))),label='SM57',color=colors[1]) #mean(IR57_tr[:idx3])
 ax1.semilogx(freq_tr, 20*np.log10(IR84_de_tr/np.mean(np.abs(IR84_de_tr[idx3:idx4]))),label='WA-84 (Desk)',color=colors[2])
 ax1.semilogx(freq_tr, 20*np.log10(IR84_dr_tr/np.mean(np.abs(IR84_dr_tr[idx3:idx4]))),label='WA-84 (Drums)',color=colors[3])
 ax1.semilogx(freq_tr, 20*np.log10(speaker_response/np.mean(np.abs(speaker_response[idx3:idx4]))),label='speaker',color=colors[4])
-ax1.set(xlim=[20,2e4],ylim=[-30,20],xlabel='Frequency (Hz)',ylabel='Normalized Amplitude (dB)')
+ax1.set(title='Frequency Response',xlim=[20,2e4],ylim=[-30,20],xlabel='Frequency (Hz)',ylabel='Normalized Amplitude (dB)')
 ax1.legend(fontsize=14,loc='best')
 ax1.grid(visible=True, which='major', axis='both')
-fig.savefig('FRF_5sec_chirp.png', format='png', dpi=500)
+# fig.savefig('FRF_5sec_chirp.png', format='png', dpi=500)

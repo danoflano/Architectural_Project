@@ -9,7 +9,8 @@ from scipy.io import wavfile
 import numpy as np
 from scipy import fftpack as ft
 import matplotlib.pyplot as plt
-import Project_Final as pf
+import Calibrate_IR_Reverberate as pf
+from matplotlib import rcParams
 global fs
 
 #%% Obtaining Mic responses from 5 second chirp and PLOTTING
@@ -44,22 +45,44 @@ if 0:
 
 # Slice where f > 100 and plot (3 second chirps)
 
-idx1 = np.argmax(freq>=100)
+idx1 = 20#np.argmax(freq>=100)
 idx2 = np.argmax(freq>=2e4)
-idx3 = np.argmax(freq>=1e3)
+idx3 = np.argmax(freq>=1e2)
+idx4 = np.argmax(freq>=1e3)
 freq_tr = freq[idx1:idx2]
 IR57_tr = IR57[idx1:idx2]
 IR251_tr = IR251[idx1:idx2]
 IR84_dr_tr = IR84_dr[idx1:idx2]
 IR84_de_tr = IR84_de[idx1:idx2]
+speaker_response = speaker_response[idx1:idx2]
 
 
+rcParams['axes.labelsize'] = 12
+rcParams['axes.grid'] = True
+rcParams['axes.linewidth'] = 1
+rcParams['figure.figsize'] = (12,4)
+rcParams['figure.titlesize'] = 16
+rcParams['grid.color'] = 'grey'
+rcParams['grid.alpha'] = 0.75
+rcParams['grid.linestyle'] = '--'
+
+rcParams['xtick.color'] = 'k'
+rcParams['xtick.labelcolor'] = 'k'
+rcParams['ytick.color'] = 'k'
+rcParams['ytick.labelcolor'] = 'k'
+
+rcParams['legend.fontsize'] = 11
+
+
+colors = np.array(['b','chartreuse','darksalmon','r','black'])
 plt.close('all')
 fig, ax1 = plt.subplots()
-ax1.semilogx(freq_tr, 20*np.log10(IR57_tr/np.mean(np.abs(IR57_tr[:idx3]))),label='SM57')
-ax1.semilogx(freq_tr, 20*np.log10(IR251_tr/np.mean(np.abs(IR251_tr[:idx3]))),label='251')
-ax1.semilogx(freq_tr, 20*np.log10(IR84_dr_tr/np.mean(np.abs(IR84_dr_tr[:idx3]))),label='84-1')
-ax1.semilogx(freq_tr, 20*np.log10(IR84_de_tr/np.mean(np.abs(IR84_de_tr[:idx3]))),label='84-2')
-ax1.set(title='Frequency Response',xlim=[100,2e4])
+ax1.semilogx(freq_tr, 20*np.log10(IR251_tr/np.mean(np.abs(IR251_tr[idx3:idx4]))),label='WA-251',color=colors[0])
+ax1.semilogx(freq_tr, 20*np.log10(IR57_tr/np.mean(np.abs(IR57_tr[idx3:idx4]))),label='SM57',color=colors[1]) #mean(IR57_tr[:idx3])
+ax1.semilogx(freq_tr, 20*np.log10(IR84_de_tr/np.mean(np.abs(IR84_de_tr[idx3:idx4]))),label='WA-84 (Desk)',color=colors[2])
+ax1.semilogx(freq_tr, 20*np.log10(IR84_dr_tr/np.mean(np.abs(IR84_dr_tr[idx3:idx4]))),label='WA-84 (Drums)',color=colors[3])
+ax1.semilogx(freq_tr, 20*np.log10(speaker_response/np.mean(np.abs(speaker_response[idx3:idx4]))),label='speaker',color=colors[4])
+ax1.set(title='Frequency Response',xlim=[20,2e4],ylim=[-30,20],xlabel='Frequency (Hz)',ylabel='Normalized Amplitude (dB)')
 ax1.legend(fontsize=8,loc=4)
-ax1.grid(visible=None, which='major', axis='both')
+ax1.grid(visible=True, which='major', axis='both')
+fig.savefig('FRF_5sec_chirp.png', format='png', dpi=500)

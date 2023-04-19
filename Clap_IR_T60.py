@@ -9,7 +9,10 @@ from scipy.io import wavfile
 import numpy as np
 from scipy import fftpack as ft
 import matplotlib.pyplot as plt
+from matplotlib import rcParams
 global fs
+
+rcParams.update(plt.rcParamsDefault)
 
 def ImpulseToT60(time_sig,t1,t2,slope,adj_Lp,title,b_wn,xmax,ymin):
     # adj_Lp - Amplitude offset [dB]
@@ -25,7 +28,7 @@ def ImpulseToT60(time_sig,t1,t2,slope,adj_Lp,title,b_wn,xmax,ymin):
     freq = np.linspace(0.0, fs/2, N//2) #use // to return int
     freq_sig = ft.fft(time_sig)
     # plot time-series and frequency response of unfiltered signal
-    if 1:
+    if 0:
         fig, ax1 = plt.subplots(2)
         ax1[0].plot(time,time_sig/max(time_sig))
         ax1[0].set(title=title+' - IR vs time(s)')#,xlim=[0,0.002])

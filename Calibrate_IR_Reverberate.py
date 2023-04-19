@@ -53,6 +53,16 @@ def Convolve(A,B):
     C = np.int16(np.real(C)/max(np.real(C))*32767)
     return C
 
+def Deconvolve(A,B):
+    # deconvolve 2 time signals
+    # Order matters here!
+    if len(A) > len(B):
+        B = np.append(B,np.zeros(len(A)-len(B)))
+    elif len(B) > len(A):
+        A = np.append(A,np.zeros(len(B)-len(A)))
+    C = ft.ifft(ft.fft(A)/ft.fft(B))
+    C = np.int16(np.real(C)/max(np.real(C))*32767)
+    return C
 
 if __name__ == "__main__":
     
@@ -93,9 +103,9 @@ if __name__ == "__main__":
     ax1[0].set(title='Room Impulse Response vs Time (s)')
     ax1[1].set(title='Room Impulse Response vs Frequency (Hz)',xlim=[1e2,2e4])
     
-    #%% Reverberate (Convolve) Audio Track
+    #%% Reverberate (Convolve) Audio Track recorded in chamber
     
-    fs,moonrocks = wavfile.read('Chamber/talkingheads_moonrocks.wav')  
+    fs,moonrocks = wavfile.read('Chamber/talkingheads_moonrocks.wav')
     reverberated_sig = Convolve(h,moonrocks)
     time = np.arange(len(reverberated_sig))/fs
     
@@ -104,8 +114,26 @@ if __name__ == "__main__":
         fig, ax1 = plt.subplots()
         ax1.plot(time,reverberated_sig) #h
         ax1.set(title='Reverbed Moon')#,xlim=[0,0.002])
-        # wavfile.write('reverbed_moonrocks_BR.wav', fs, reverberated_sig)
+    # wavfile.write('reverbed_raw_moonrocks_BR.wav', fs, reverberated_sig)
 
 
-
-
+    #%% Obtain original signal (Deconvolve) Audio Track
+    # moonrocksfft = ft.fft(moonrocks)
+    # time = np.arange(len(moonrocks))/fs
+    # freq = np.linspace(0.0, fs/2, len(moonrocks)//2) #use // to return int
+    
+    # deconv_moonrocks = Deconvolve(moonrocksfft,IR84_dr)
+    # deconv_moonrocks = Deconvolve(deconv_moonrocks,speaker_response)
+    # reverberated_deconv_sig = Convolve(h,deconv_moonrocks)
+    # wavfile.write('deconv_moonrocks_BR.wav', fs, deconv_moonrocks)
+    # wavfile.write('reverbed_deconv_moonrocks_BR.wav', fs, reverberated_deconv_sig)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
